@@ -1,8 +1,8 @@
 #pragma once
-class ScreenManager
+class Screen_Manager
 {
 private:
-
+	
 public:
 	void open_start_stage();
 	void open_game_stage();
