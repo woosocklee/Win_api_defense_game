@@ -2,19 +2,25 @@
 class Vector2D
 {
 private:
-	double x;
-	double y;
+	
 
 public:
-	//µ¡¼À
-	//»¬¼À
-	//³»Àû
-	//¿ÜÀû
-	//½ºÄ®¶ó¿ÍÀÇ °ö
-	//½ºÄ®¶ó¿ÍÀÇ ³ª´°¼À
-	//È¸Àü https://www.youtube.com/watch?v=a59YQ4qe7mE
-	//Á¤±ÔÈ­(´ÜÀ§º¤ÅÍÈ­)
-	//getx,y
-	//setx,y
+	double x;
+	double y;
+	Vector2D();
+	Vector2D(double x, double y);
+	Vector2D(const Vector2D& vec);
+	Vector2D operator+(const Vector2D& otherV) const;//µ¡¼À
+	Vector2D operator-(const Vector2D& otherV) const;//»¬¼À
+	double dot(const Vector2D& rhs);//³»Àû
+	double cross(const Vector2D& rhs);//¿ÜÀû
+	Vector2D operator*(double n);//½ºÄ®¶ó¿ÍÀÇ °ö
+	Vector2D operator/(double n);//½ºÄ®¶ó¿ÍÀÇ ³ª´°¼À
+	Vector2D& operator=(const Vector2D& rhs);
+	Vector2D rotate(double radian);//È¸Àü
+	Vector2D rotate(const Vector2D& otherV, double radian); //Ãà ±âÁØ È¸Àü 
+	Vector2D normalize();//Á¤±ÔÈ­(´ÜÀ§º¤ÅÍÈ­)
+	double getlength();
+	double getlengthsq();
 };
 
