@@ -176,6 +176,7 @@
     <ResourceCompile Include="Win_api_defense_game.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="Image\down_arrow.png" />
     <Image Include="small.ico" />
     <Image Include="Win_api_defense_game.ico" />
   </ItemGroup>

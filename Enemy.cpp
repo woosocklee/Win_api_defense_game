@@ -12,15 +12,15 @@ Enemy::~Enemy()
 {
 }
 
-missile* Enemy::spawnmissile()
+Missile Enemy::spawnmissile()
 {
-	missile* enemyshot = new missile({spawnPosX,0}, {0,10});
+	Missile enemyshot = Missile({spawnPosX,0}, {0,10}, Missile::Mtype::Enemy);
 	return enemyshot;
 }
 
 void Enemy::update()
 {
-	this->setspawnPosX();
+	this->setspawnPosX(1200); // 나중에 여기 수정해야함. 값을 어디서 받아와서 쓰게 하기.
 }
 
 void Enemy::setspawnPosX(int limitMax)

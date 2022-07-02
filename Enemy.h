@@ -9,7 +9,7 @@ private:
 public:
 	Enemy();
 	~Enemy();
-	missile* spawnmissile();
+	Missile spawnmissile();
 	void update();
 	void setspawnPosX(int limitMax);
 	//스포너. 총알 스폰되게 함. (spawnpos, 0)에서 스폰됨.

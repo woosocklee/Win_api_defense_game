@@ -1,23 +1,27 @@
 #pragma once
 #include "Vector2D.h"
-#include "missile.h"
+#include "Missile.h"
 #include <string>
 class Player
 {
 private:
-	std::string Name;
+	std::string name;
 	int HP;
 	Vector2D missileSpawnPoint;
-	Vector2D MissileDirection;
+	Vector2D missileDirection;
 	Vector2D TurretCurpos;
+	int score;
 	
 public:
 	Player();
 	~Player();
-	Missile* shotmissile();
+	Missile shotmissile();
+	int getHP();
 	void setHP(int newhp);
-	
+	int getscore();
+	void setscore(int score);
 	void update();
+	void draw();
 	//좌클릭시 미사일 발사
 	//마우스 포인터를 따라가면서 발사할 수 있게 하기
 	//a랑 d로 양 옆으로 움직일 수 있게 하기. 속도 주기.
