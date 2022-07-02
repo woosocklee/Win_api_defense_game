@@ -84,5 +84,17 @@
     <Image Include="Image\down_arrow.png">
       <Filter>리소스 파일</Filter>
     </Image>
+    <Image Include="Image\halfarc.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Image\barrel.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Image\fullhp.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Image\emptyhp.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
   </ItemGroup>
 </Project>

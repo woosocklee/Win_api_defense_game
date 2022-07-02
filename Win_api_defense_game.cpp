@@ -19,9 +19,24 @@ BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
+
+//내가 만든 전역변수들
+
 static RECT windowsize;
 
 Game_manager GM(windowsize);
+ULONG_PTR g_GdiToken;
+
+
+
+
+
+
+
+
+
+
+// 전역변수 끝
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,

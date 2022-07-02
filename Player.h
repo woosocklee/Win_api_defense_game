@@ -5,7 +5,7 @@
 class Player
 {
 private:
-	std::string name;
+	std::wstring name;
 	int HP;
 	Vector2D missileSpawnPoint;
 	Vector2D missileDirection;
@@ -21,7 +21,9 @@ public:
 	int getscore();
 	void setscore(int score);
 	void update();
-	void draw();
+	void draw(HDC hdc);
+	std::wstring getname() const; 
+	void setname(const std::wstring newname);
 	//좌클릭시 미사일 발사
 	//마우스 포인터를 따라가면서 발사할 수 있게 하기
 	//a랑 d로 양 옆으로 움직일 수 있게 하기. 속도 주기.

@@ -1,6 +1,15 @@
 #include "pch.h"
 #include "Gamemanager.h"
 #include <algorithm>
+#include <string>
+
+
+#include <ObjIdl.h>
+#include <gdiplus.h>
+#pragma comment(lib, "Gdiplus.lib")
+using namespace Gdiplus;
+
+
 // 시작 창
 //1. 아이디 입력창을 띄워 아이디 입력받기.
 //2. 버튼/엔터 누르기 중에 구현 쉬운거로 입력받으면 그걸 플레이어 아이디 스트링에 박고 게임 시작하기.
@@ -108,15 +117,89 @@ void Game_manager::Update()
 
 }
 
-void Game_manager::Draw()
+void Game_manager::Draw(HDC hdc)
 {
-
+	//미사일 그려주기
+	
 	for (auto& i : this->missiles)
 	{
-		i.draw();
+		i.draw(hdc);
 	}
 
-	this->Pturret.draw();
+	//미사일 끝
+
+	//플레이어 그려주기
+
+	this->Pturret.draw(hdc);
+
+	//플레이어 그려주기 끝
+
+	//체력바 그려주기
+
+	for (int i = 0; i < 10; i++)
+	{
+		if (i < this->Pturret.getHP())
+		{
+			Gdi_Draw_full_hpbar(hdc, 128*i, 1200); // rect에서 bottom값 받아오게 하기.
+		}
+		else
+		{
+			Gdi_Draw_empty_hpbar(hdc, 128 * i, 1200);
+		}
+	}
+	//플레이어 체력바 끝
+
+	//아이디 그려주기
+
+	Gdi_Draw_name(hdc, this->Pturret.getname());
+
+
+	//점수, 아이디 그리게 해주기.
+
+	Gdi_Draw_score(hdc, this->Pturret.getscore());
 
 	//각자 draw하게 해주기.
+}
+
+void Gdi_Draw_name(HDC hdc, std::wstring name)
+{
+
+	Graphics graphics(hdc);
+	// >> txt
+	SolidBrush brush(Color(255, 255, 0, 0));
+	FontFamily fontFamily(L"Times New Roman");
+	Font font(&fontFamily, 24, FontStyleRegular, UnitPixel);
+	PointF pointF(10.0f, 20.0f);
+	graphics.DrawString(name.c_str(), -1, &font, pointF, &brush);
+}
+
+void Gdi_Draw_score(HDC hdc, int score)
+{
+
+	Graphics graphics(hdc);
+	// >> txt
+	SolidBrush brush(Color(255, 255, 0, 0));
+	FontFamily fontFamily(L"Times New Roman");
+	Font font(&fontFamily, 24, FontStyleRegular, UnitPixel);
+	PointF pointF(1000.0f, 20.0f);
+	graphics.DrawString(std::to_wstring(score).c_str(), -1, &font, pointF, &brush);
+}
+
+
+void Gdi_Draw_full_hpbar(HDC hdc, int x, int y)
+{
+	Graphics graphics(hdc);
+	Image img((WCHAR*)L"images/fullhp.png");
+	int w = img.GetWidth();
+	int h = img.GetHeight();
+	graphics.DrawImage(&img, x - (w / 2), y - (h / 2), w, h);
+}
+
+void Gdi_Draw_empty_hpbar(HDC hdc, int x, int y)
+{
+	Graphics graphics(hdc);
+	Image img((WCHAR*)L"images/emptyhp.png");
+	int w = img.GetWidth();
+	int h = img.GetHeight();
+	graphics.DrawImage(&img, x - (w / 2), y - (h / 2), w, h);
 }

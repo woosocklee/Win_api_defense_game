@@ -20,7 +20,7 @@ Missile Enemy::spawnmissile()
 
 void Enemy::update()
 {
-	this->setspawnPosX(1200); // 나중에 여기 수정해야함. 값을 어디서 받아와서 쓰게 하기.
+	this->setspawnPosX(1200); // 나중에 여기 수정해야함. 사각형 값을 어디서 받아와서 쓰게 하기.
 }
 
 void Enemy::setspawnPosX(int limitMax)

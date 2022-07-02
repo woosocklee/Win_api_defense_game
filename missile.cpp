@@ -2,6 +2,10 @@
 #include "missile.h"
 #include "framework.h"
 
+#include <ObjIdl.h>
+#include <gdiplus.h>
+#pragma comment(lib, "Gdiplus.lib")
+using namespace Gdiplus;
 
 
 Missile::Missile(const Vector2D& spawnp, const Vector2D& speed, Mtype mtype)
@@ -78,12 +82,15 @@ void Missile::update()
 	this->curPos.y += this->speed.y;
 }
 
+void Gdi_Draw(HDC hdc, int x, int y);
+void Gdi_Init(ULONG_PTR& g_GdiToken);
+
 void Missile::draw(HDC hdc)
 {
 	switch (this->missileType)
 	{
 	case Mtype::Enemy:
-		
+		Gdi_Draw(hdc, this->curPos.x, this->curPos.y);
 		break;
 	case Mtype::Player:
 		drawcircle(hdc, { this->curPos.x,this->curPos.y }, this->radius);
@@ -93,8 +100,22 @@ void Missile::draw(HDC hdc)
 	}
 }
 
-
 void drawcircle(HDC hdc, Vector2D center, int radius)
 {
 	Ellipse(hdc, center.x - radius, center.y - radius, center.x + radius, center.y + radius);
+}
+
+void Gdi_Init(ULONG_PTR& g_GdiToken)
+{
+	GdiplusStartupInput gpsi;
+	GdiplusStartup(&g_GdiToken, &gpsi, NULL);
+}
+
+void Gdi_Draw(HDC hdc, int x, int y)
+{
+	Graphics graphics(hdc);
+	Image img((WCHAR*)L"images/down_arrow.png");
+	int w = img.GetWidth();
+	int h = img.GetHeight();
+	graphics.DrawImage(&img, x - (w / 2), y - (h / 2), w, h);
 }

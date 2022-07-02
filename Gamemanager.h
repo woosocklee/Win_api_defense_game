@@ -4,6 +4,7 @@
 #include "Missile.h"
 #include <vector>
 #include "Resource.h"
+#include "framework.h"
 
 class Game_manager
 {
@@ -29,7 +30,7 @@ public:
 	Stage curStage;
 public:
 	void Update();
-	void Draw();
+	void Draw(HDC hdc);
 
 };
 
