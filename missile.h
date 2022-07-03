@@ -23,6 +23,7 @@ public:
 	void setstate(bool newstate);
 	void update(float dt);
 	void draw(HDC hdc);
+	Vector2D getcurpos();
 
 	//º®°ú ´êÀ¸¸é ÆÄ±«
 	//ÃÑ¾Ë³¢¸® ´êÀ¸¸é Á¡¼ö È¹µæ

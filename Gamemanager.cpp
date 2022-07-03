@@ -69,6 +69,11 @@ void Game_manager::setwindowSize(RECT window)
 	this->windowSize = window;
 }
 
+Game_manager::Stage Game_manager::getCurStage() const
+{
+	return this->curStage;
+}
+
 void Game_manager::Update()
 {
 	float dt = timer.GetTime();
@@ -105,13 +110,21 @@ void Game_manager::Update()
 
 		//벽과의 충돌. 
 
-		switch ((i.overlapwall(this->windowSize.right, this->windowSize.bottom)))
+		switch ((i.overlapwall(this->windowSize.right, this->windowSize.bottom-30)))
 		{
 		case 1:
 			i.setstate(false);
 			if (i.getmissileType())
 			{
-				this->Pturret.setHP(this->Pturret.getHP() - 1);
+				if (this->Pturret.getstate(i.getcurpos().x))
+				{
+					this->Pturret.setstate(i.getcurpos().x);
+				}
+				else
+				{
+					// 게임 패배!
+				}
+				
 			}
 			break;
 		case -1:
@@ -170,7 +183,7 @@ void Game_manager::Draw(HDC hdc)
 
 	for (int i = 0; i < 10; i++)
 	{
-		if (i < this->Pturret.getHP())
+		if (this->Pturret.getstate(i))
 		{
 			Gdi_Draw_full_hpbar(outerhdc, 128 * i, this->windowSize.bottom); // rect에서 bottom값 받아오게 하기.
 		}

@@ -9,8 +9,19 @@
 
 class Game_manager
 {
+
+public:
+
+	enum class Stage
+	{
+		Beginning,
+		Gameplay,
+		Ranking
+	};
 private:
 	void Changestage();
+
+	Stage curStage;
 
 private:
 	std::vector<Missile> missiles;
@@ -37,13 +48,7 @@ public:
 	HBITMAP hDoubleBufferImage;
 	HBITMAP hBackImage;
 
-	enum class Stage
-	{
-		Beginning,
-		Gameplay,
-		Ranking
-	};
-	Stage curStage;
+	Stage getCurStage() const;
 
 
 public:

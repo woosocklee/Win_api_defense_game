@@ -120,6 +120,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         else
         {
             GM.Update();
+            if (GM.getCurStage() == Game_manager::Stage::Ranking)
+            {
+                break;
+            }
             //update here
 
         }

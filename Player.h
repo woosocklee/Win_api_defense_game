@@ -7,7 +7,7 @@ class Player
 {
 private:
 	std::wstring name;
-	std::vector<bool> wallstate;
+	std::vector<int> wallstate;
 	Vector2D missileSpawnPoint;
 	Vector2D missileDirection;
 	Vector2D TurretCurpos;

@@ -13,7 +13,11 @@ using namespace Gdiplus;
 
 Player::Player()
 {
-    this->HP = 10;
+    for (int i = 0; i < 10; i++)
+    {
+        this->wallstate.push_back(1);
+    }
+
     this->score = 0;
     this->TurretCurpos = { 600, 650 };
 }
@@ -24,19 +28,44 @@ Player::~Player()
 
 Missile Player::shotmissile()
 {
-    Missile shot = Missile(this->missileSpawnPoint, this->missileDirection * 20, Missile::Mtype::Player);
+    Missile shot = Missile(this->missileSpawnPoint, this->missileDirection * 30, Missile::Mtype::Player);
     return shot;
 }
 
 bool Player::getstate(int pos)
 {
-    
-    return false;
+    int truepos = pos / 128;
+
+    if (truepos >= 0 && truepos < this->wallstate.size())
+    {
+        return this->wallstate[truepos];
+    }
+    else
+    {
+        return -1;
+    }
 }
 
 bool Player::setstate(int pos)
 {
-    return false;
+    int truepos = pos / 128;
+    if (truepos >= 0 && truepos < this->wallstate.size())
+    {
+        if (this->wallstate[truepos] > 0)
+        {
+            this->wallstate[truepos] = 0;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    else
+    {
+        return true;
+    }
+    
 }
 
 
@@ -55,12 +84,7 @@ void Player::setscore(int score)
 void Player::update()
 {
     //마우스 포인터 위치 받아와서 그 좌표에 맞게 missileSpawnPoint, missileDirection 조정해주기.
-    //이동한만큼 TurretCurpos 조정해주기.
 
-    if (this->HP == 0)
-    {
-        return;//체력 0되면 사망처리하기.
-    }
 }
 
 void Player::draw(HDC hdc)

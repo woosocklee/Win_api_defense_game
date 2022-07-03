@@ -98,6 +98,11 @@ void Missile::draw(HDC hdc)
 	}
 }
 
+Vector2D Missile::getcurpos()
+{
+	return this->curPos;
+}
+
 void drawcircle(HDC hdc, Vector2D center, int radius)
 {
 	Ellipse(hdc, center.x - radius, center.y - radius, center.x + radius, center.y + radius);
