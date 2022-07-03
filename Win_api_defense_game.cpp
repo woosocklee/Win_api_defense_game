@@ -6,6 +6,15 @@
 #include "Gamemanager.h"
 #include "Win_api_defense_game.h"
 
+
+#include <iomanip>
+#include <ObjIdl.h>
+#include <gdiplus.h>
+#pragma comment(lib, "Gdiplus.lib")
+#pragma comment(lib, "msimg32.lib")
+using namespace Gdiplus;
+
+
 #define MAX_LOADSTRING 100
 
 // 전역 변수:
@@ -23,13 +32,28 @@ INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 //내가 만든 전역변수들
 
 static RECT windowsize;
+static HBITMAP tempBImage;
+static BITMAP tempbitback;
+
 
 Game_manager GM(windowsize);
 ULONG_PTR g_GdiToken;
 
 
 
+void Gdi_Init(ULONG_PTR& g_GdiToken)
+{
+    GdiplusStartupInput gpsi;
+    GdiplusStartup(&g_GdiToken, &gpsi, NULL);
+}
 
+
+void CreateBitmap(HBITMAP& hBackImage, BITMAP& bitBack)
+{
+    hBackImage = (HBITMAP)LoadImage(NULL, TEXT("Image/Tempbitmap.bmp"), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+    GetObject(hBackImage, sizeof(BITMAP), &bitBack);
+
+}
 
 
 
@@ -47,6 +71,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     UNREFERENCED_PARAMETER(lpCmdLine);
 
     // TODO: 여기에 코드를 입력합니다.
+
+    Gdi_Init(g_GdiToken);
+
+    CreateBitmap(tempBImage, tempbitback);
 
     // 전역 문자열을 초기화합니다.
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
@@ -73,7 +101,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     //    }
     //}
 
-    
+
 
     while (true)
     {
@@ -91,9 +119,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         }
         else
         {
+            GM.Update();
             //update here
 
         }
+
          
     }
 
@@ -165,11 +195,27 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //  WM_PAINT    - 주 창을 그립니다.
 //  WM_DESTROY  - 종료 메시지를 게시하고 반환합니다.
 //
-//
+//  
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+
+
+
     switch (message)
     {
+    case WM_CREATE:
+        GetClientRect(hWnd, &windowsize);
+        GM.setwindowSize(windowsize);
+        SetTimer(hWnd, 0, 0, NULL);
+        break;
+    case WM_SIZE:
+        GetClientRect(hWnd, &windowsize);
+        GM.setwindowSize(windowsize);
+        break;
+    case WM_TIMER:
+        InvalidateRgn(hWnd, NULL, FALSE);
+        break;
     case WM_COMMAND:
         {
             int wmId = LOWORD(wParam);
@@ -191,12 +237,28 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
+
+            GM.Draw(hdc);
             // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
             EndPaint(hWnd, &ps);
         }
         break;
     case WM_DESTROY:
         PostQuitMessage(0);
+        break;
+    case WM_LBUTTONDOWN:
+        GM.addPmissile(GM.Pturret.shotmissile());
+
+        //InvalidateRgn(hWnd, NULL, TRUE);
+        break;
+
+    case WM_MOUSEMOVE:
+        
+        GM.Pturret.setmissileDirection({ double(LOWORD(lParam)), double(HIWORD(lParam)) });
+        //InvalidateRgn(hWnd, NULL, TRUE);
+        break;
+    case WM_CHAR:
+        
         break;
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);

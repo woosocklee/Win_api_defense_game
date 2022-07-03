@@ -45,6 +45,9 @@
     <ClInclude Include="Vector2D.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Win_api_defense_game.cpp">
@@ -66,6 +69,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Vector2D.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -94,6 +100,9 @@
       <Filter>리소스 파일</Filter>
     </Image>
     <Image Include="Image\emptyhp.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Image\Tempbitmap.bmp">
       <Filter>리소스 파일</Filter>
     </Image>
   </ItemGroup>

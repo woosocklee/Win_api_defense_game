@@ -76,24 +76,22 @@ void Missile::setstate(bool newstate)
 	this->state = newstate;
 }
 
-void Missile::update()
+void Missile::update(float dt)
 {
-	this->curPos.x += this->speed.x;
-	this->curPos.y += this->speed.y;
+	this->curPos.x += (this->speed.x * dt);
+	this->curPos.y += (this->speed.y * dt);
 }
 
-void Gdi_Draw(HDC hdc, int x, int y);
-void Gdi_Init(ULONG_PTR& g_GdiToken);
 
 void Missile::draw(HDC hdc)
 {
 	switch (this->missileType)
 	{
 	case Mtype::Enemy:
-		Gdi_Draw(hdc, this->curPos.x, this->curPos.y);
+		Gdi_Draw_Arrow(hdc, this->curPos.x, this->curPos.y);
 		break;
 	case Mtype::Player:
-		drawcircle(hdc, { this->curPos.x,this->curPos.y }, this->radius);
+		drawcircle(hdc, this->curPos, this->radius);
 		break;
 	default:
 		break;
@@ -105,17 +103,12 @@ void drawcircle(HDC hdc, Vector2D center, int radius)
 	Ellipse(hdc, center.x - radius, center.y - radius, center.x + radius, center.y + radius);
 }
 
-void Gdi_Init(ULONG_PTR& g_GdiToken)
-{
-	GdiplusStartupInput gpsi;
-	GdiplusStartup(&g_GdiToken, &gpsi, NULL);
-}
 
-void Gdi_Draw(HDC hdc, int x, int y)
+void Gdi_Draw_Arrow(HDC hdc, int x, int y)
 {
 	Graphics graphics(hdc);
-	Image img((WCHAR*)L"images/down_arrow.png");
+	Image img((WCHAR*)L"Image/down_arrow.png");
 	int w = img.GetWidth();
 	int h = img.GetHeight();
-	graphics.DrawImage(&img, x - (w / 2), y - (h / 2), w, h);
+	graphics.DrawImage(&img, x - (w / 30), y - (h / 30), w/15, h/15);
 }

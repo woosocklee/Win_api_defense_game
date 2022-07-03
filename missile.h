@@ -21,11 +21,12 @@ public:
 	bool getmissileType();
 	bool getstate() const;
 	void setstate(bool newstate);
-	void update();
+	void update(float dt);
 	void draw(HDC hdc);
 
 	//º®°ú ´êÀ¸¸é ÆÄ±«
 	//ÃÑ¾Ë³¢¸® ´êÀ¸¸é Á¡¼ö È¹µæ
 };
 
-void drawcircle(HDC hdc, POINT center, int radius);
+void drawcircle(HDC hdc, Vector2D center, int radius);
+void Gdi_Draw_Arrow(HDC hdc, int x, int y);

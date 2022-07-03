@@ -15,6 +15,7 @@ Player::Player()
 {
     this->HP = 10;
     this->score = 0;
+    this->TurretCurpos = { 600, 650 };
 }
 
 Player::~Player()
@@ -23,19 +24,22 @@ Player::~Player()
 
 Missile Player::shotmissile()
 {
-    Missile shot = Missile(this->missileSpawnPoint, this->missileDirection, Missile::Mtype::Player);
+    Missile shot = Missile(this->missileSpawnPoint, this->missileDirection * 20, Missile::Mtype::Player);
     return shot;
 }
 
-int Player::getHP()
+bool Player::getstate(int pos)
 {
-    return this->HP;
+    
+    return false;
 }
 
-void Player::setHP(int newhp)
+bool Player::setstate(int pos)
 {
-    this->HP = newhp;
+    return false;
 }
+
+
 
 int Player::getscore()
 {
@@ -61,9 +65,21 @@ void Player::update()
 
 void Player::draw(HDC hdc)
 {
-    Gdi_Draw(hdc, this->TurretCurpos.x, this->TurretCurpos.y); // 반원 그림
+    Gdi_DrawPlayer(hdc, this->TurretCurpos.x, this->TurretCurpos.y); // 반원 그림
     Vector2D centervec = (this->TurretCurpos + this->missileSpawnPoint) / 2;
-    Gdi_barrel(hdc, centervec.x , centervec.y , atan2(this->missileDirection.x, this->missileDirection.y) * 180 / M_PI); //포신 그리기.
+
+    double radian = atan2(this->missileDirection.x, -1 * this->missileDirection.y) * 180 / M_PI;
+
+    if (radian < -90)
+    {
+        radian = -90;
+    }
+    else if (radian > 90)
+    {
+        radian = 90;
+    }
+    
+    Gdi_barrel(hdc, centervec.x , centervec.y - 10 , radian); //포신 그리기.
 }
 
 std::wstring Player::getname() const
@@ -76,26 +92,29 @@ void Player::setname(const std::wstring newname)
     this->name = newname;
 }
 
-void Gdi_Init(ULONG_PTR& g_GdiToken)
+void Player::setmissileDirection(Vector2D mousepoint)
 {
-    GdiplusStartupInput gpsi;
-    GdiplusStartup(&g_GdiToken, &gpsi, NULL);
+    Vector2D tempvec = mousepoint - this->TurretCurpos;
+    this->missileDirection = tempvec.normalize();
+    this->missileSpawnPoint = this->TurretCurpos + (this->missileDirection * 20);
 }
 
-void Gdi_Draw(HDC hdc, int x, int y)
+
+void Gdi_DrawPlayer(HDC hdc, int x, int y)
 {
     Graphics graphics(hdc);
-    Image img((WCHAR*)L"images/halfarc.png");
+    Image img((WCHAR*)L"Image/halfarc.png");
+    
     int w = img.GetWidth();
     int h = img.GetHeight();
-    graphics.DrawImage(&img, x - (w / 2), y - h, w, h);
+    graphics.DrawImage(&img, x - (w / 20), y - h / 10, w / 10, h / 10);
 }
 
 void Gdi_barrel(HDC hdc, int x, int y, int rot)
 {
     Graphics graphics(hdc);
     Image* pImg = nullptr;
-    pImg = Image::FromFile((WCHAR*)L"images/barrel.png");
+    pImg = Image::FromFile((WCHAR*)L"Image/barrel.png");
     int xPos = x;
     int yPos = y;
     int w;

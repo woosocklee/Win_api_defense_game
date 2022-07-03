@@ -2,6 +2,14 @@
 #include "Vector2D.h"
 #include <cmath>
 
+
+#include <ObjIdl.h>
+#include <gdiplus.h>
+#pragma comment(lib, "Gdiplus.lib")
+using namespace Gdiplus;
+
+
+
 Vector2D::Vector2D()
 {
 	this->x = 0;
