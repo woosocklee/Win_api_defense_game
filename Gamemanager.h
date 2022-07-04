@@ -2,6 +2,7 @@
 #include "Enemy.h"
 #include "Player.h"
 #include "Missile.h"
+#include "Shield.h"
 #include <vector>
 #include "Resource.h"
 #include "framework.h"
@@ -26,14 +27,16 @@ private:
 private:
 	std::vector<Missile> missiles;
 	Enemy enemys;
+	std::vector<Shield> shields;
 
-	RECT windowSize;
 	Timer timer;
 	double accumulatedTime = 0;
-	double spawnrate = 1;
+	double spawnrate = 3;
 
 
 public:
+	RECT windowSize;
+	RECT oldWindowSize;
 	void addPmissile(Missile Pm);
 	Player Pturret;
 	Game_manager(RECT r);
@@ -41,8 +44,6 @@ public:
 	void setwindowSize(RECT window);
 	void Gdi_Draw_name(HDC hdc, std::wstring name);
 	void Gdi_Draw_score(HDC hdc, int score);
-	void Gdi_Draw_full_hpbar(HDC hdc, int x, int y);
-	void Gdi_Draw_empty_hpbar(HDC hdc, int x, int y);
 	void drawDoubleBuffring(/*HWND hWnd,*/ HDC hdc, HBITMAP hBackImage, BITMAP hBitback);
 	
 	HBITMAP hDoubleBufferImage;

@@ -49,15 +49,17 @@ void Game_manager::addPmissile(Missile Pm)
 	this->missiles.push_back(Pm);
 }
 
-Game_manager::Game_manager(const RECT r) : windowSize(r)
+Game_manager::Game_manager(const RECT r) : windowSize(r), Pturret(r)
 {
-
 	if (!missiles.empty())
 	{
 		missiles = {};
 	}
 	this->curStage = Stage::Beginning;
-
+	for (int i = 0; i < 10; i++)
+	{
+		shields.push_back({ true ,{double(r.right/(i+1)),double(r.bottom/(i+1))} });
+	}
 }
 
 Game_manager::~Game_manager()
@@ -67,6 +69,7 @@ Game_manager::~Game_manager()
 void Game_manager::setwindowSize(RECT window)
 {
 	this->windowSize = window;
+
 }
 
 Game_manager::Stage Game_manager::getCurStage() const
@@ -101,7 +104,7 @@ void Game_manager::Update()
 			{
 				if (i.overlap(j))
 				{
-					this->Pturret.setscore(this->Pturret.getscore() + 100);
+					this->Pturret.setscore(this->Pturret.getscore() + 50);
 					i.setstate(false);
 					j.setstate(false);
 				}
@@ -116,14 +119,19 @@ void Game_manager::Update()
 			i.setstate(false);
 			if (i.getmissileType())
 			{
-				if (this->Pturret.getstate(i.getcurpos().x))
+				int fallpoint = int(10 * i.getcurpos().x / this->windowSize.right);
+				if (fallpoint >= 0 && fallpoint < 10)
 				{
-					this->Pturret.setstate(i.getcurpos().x);
+					if (this->shields[fallpoint].ok)
+					{
+						this->shields[fallpoint].ok = false;
+					}
+					else
+					{
+						//game over
+					}
 				}
-				else
-				{
-					// 게임 패배!
-				}
+
 				
 			}
 			break;
@@ -156,10 +164,15 @@ void Game_manager::Draw(HDC hdc)
 	HBITMAP hOldBitmap;
 
 
-	if (hDoubleBufferImage == nullptr)
+	if (hDoubleBufferImage == nullptr || (this->oldWindowSize.right != this->windowSize.right || this->oldWindowSize.bottom != this->windowSize.bottom) )
 	{
 		// Create Bitmap Image for Double buffering
 		hDoubleBufferImage = CreateCompatibleBitmap(hdc, this->windowSize.right, this->windowSize.bottom);
+		for (int i = 0; i < 10; i++)
+		{
+			shields[i].setcurVec({double((this->windowSize.right/10) *(i-1)) , double(this->windowSize.bottom)});
+		}
+		this->oldWindowSize = this->windowSize;
 	}
 
 	hOldBitmap = (HBITMAP)SelectObject(outerhdc, hDoubleBufferImage);
@@ -181,16 +194,9 @@ void Game_manager::Draw(HDC hdc)
 
 	//체력바 그려주기
 
-	for (int i = 0; i < 10; i++)
+	for (auto& i: shields)
 	{
-		if (this->Pturret.getstate(i))
-		{
-			Gdi_Draw_full_hpbar(outerhdc, 128 * i, this->windowSize.bottom); // rect에서 bottom값 받아오게 하기.
-		}
-		else
-		{
-			Gdi_Draw_empty_hpbar(outerhdc, 128 * i, this->windowSize.bottom);
-		}
+		i.draw(outerhdc, i.getcurVec().x, i.getcurVec().y);
 	}
 	//플레이어 체력바 끝
 
@@ -240,23 +246,7 @@ void Game_manager::Gdi_Draw_score(HDC hdc, int score)
 }
 
 
-void Game_manager::Gdi_Draw_full_hpbar(HDC hdc, int x, int y)
-{
-	Graphics graphics(hdc);
-	Image img((WCHAR*)L"Image/fullhp.png");
-	int w = img.GetWidth();
-	int h = img.GetHeight();
-	graphics.DrawImage(&img, x+w, y-h, w, h);
-}
 
-void Game_manager::Gdi_Draw_empty_hpbar(HDC hdc, int x, int y)
-{
-	Graphics graphics(hdc);
-	Image img((WCHAR*)L"Image/emptyhp.png");
-	int w = img.GetWidth();
-	int h = img.GetHeight();
-	graphics.DrawImage(&img, x+w, y-h, w, h);
-}
 
 void Game_manager::drawDoubleBuffring(/*HWND hWnd,*/ HDC hdc, HBITMAP hBackImage, BITMAP hBitback)
 {

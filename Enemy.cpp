@@ -18,7 +18,7 @@ Missile Enemy::spawnmissile()
 	return enemyshot;
 }
 
-Missile Enemy::update(RECT windowsize)
+Missile Enemy::update(const RECT windowsize)
 {
 	this->setspawnPosX(windowsize.right); // 나중에 여기 수정해야함. 사각형 값을 어디서 받아와서 쓰게 하기.
 	return this->spawnmissile();

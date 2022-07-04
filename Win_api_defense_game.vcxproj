@@ -154,6 +154,7 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="Missile.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="Shield.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Vector2D.h" />
@@ -170,6 +171,7 @@
     </ClCompile>
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Missile.cpp" />
+    <ClCompile Include="Shield.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Vector2D.cpp" />
     <ClCompile Include="Win_api_defense_game.cpp" />

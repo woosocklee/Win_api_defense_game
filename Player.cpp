@@ -11,15 +11,11 @@
 using namespace Gdiplus;
 
 
-Player::Player()
+Player::Player(const RECT R)
 {
-    for (int i = 0; i < 10; i++)
-    {
-        this->wallstate.push_back(1);
-    }
 
     this->score = 0;
-    this->TurretCurpos = { 600, 650 };
+    this->TurretCurpos = {double((R.left + R.right)/2) , double(R.top + 50) };
 }
 
 Player::~Player()
@@ -28,47 +24,9 @@ Player::~Player()
 
 Missile Player::shotmissile()
 {
-    Missile shot = Missile(this->missileSpawnPoint, this->missileDirection * 30, Missile::Mtype::Player);
+    Missile shot = Missile(this->missileSpawnPoint, this->missileDirection * 40, Missile::Mtype::Player);
     return shot;
 }
-
-bool Player::getstate(int pos)
-{
-    int truepos = pos / 128;
-
-    if (truepos >= 0 && truepos < this->wallstate.size())
-    {
-        return this->wallstate[truepos];
-    }
-    else
-    {
-        return -1;
-    }
-}
-
-bool Player::setstate(int pos)
-{
-    int truepos = pos / 128;
-    if (truepos >= 0 && truepos < this->wallstate.size())
-    {
-        if (this->wallstate[truepos] > 0)
-        {
-            this->wallstate[truepos] = 0;
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-    else
-    {
-        return true;
-    }
-    
-}
-
-
 
 int Player::getscore()
 {
@@ -121,6 +79,11 @@ void Player::setmissileDirection(Vector2D mousepoint)
     Vector2D tempvec = mousepoint - this->TurretCurpos;
     this->missileDirection = tempvec.normalize();
     this->missileSpawnPoint = this->TurretCurpos + (this->missileDirection * 20);
+}
+
+void Player::setTCurPos(Vector2D pos)
+{
+    this->TurretCurpos = pos;
 }
 
 

@@ -102,7 +102,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     //}
 
 
-
     while (true)
     {
         if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
@@ -204,7 +203,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 
-
+    
 
     switch (message)
     {
@@ -216,6 +215,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_SIZE:
         GetClientRect(hWnd, &windowsize);
         GM.setwindowSize(windowsize);
+
+        GM.Pturret.setTCurPos({ double((GM.windowSize.left + GM.windowSize.right) / 2), double(GM.windowSize.bottom - 50) });
         break;
     case WM_TIMER:
         InvalidateRgn(hWnd, NULL, FALSE);
