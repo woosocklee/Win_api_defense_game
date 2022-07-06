@@ -14,7 +14,7 @@ Enemy::~Enemy()
 
 Missile Enemy::spawnmissile()
 {
-	Missile enemyshot = Missile({spawnPosX,0}, {0,100}, Missile::Mtype::Enemy);
+	Missile enemyshot = Missile({spawnPosX,0}, {0,150}, Missile::Mtype::Enemy);
 	return enemyshot;
 }
 

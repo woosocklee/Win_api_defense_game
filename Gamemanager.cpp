@@ -77,6 +77,11 @@ Game_manager::Stage Game_manager::getCurStage() const
 	return this->curStage;
 }
 
+void Game_manager::setCurStage(Stage s)
+{
+	this->curStage = s;
+}
+
 void Game_manager::Update()
 {
 	float dt = timer.GetTime();
@@ -128,6 +133,7 @@ void Game_manager::Update()
 					}
 					else
 					{
+						this->setCurStage(Game_manager::Stage::Ranking);
 						//game over
 					}
 				}
@@ -144,10 +150,6 @@ void Game_manager::Update()
 	}
 
 	this->Pturret.update();
-
-
-
-
 
 	const auto newEnd = std::remove_if(this->missiles.begin(), this->missiles.end(),
 		[](const Missile& m) {return !m.getstate(); }
@@ -228,7 +230,7 @@ void Game_manager::Gdi_Draw_name(HDC hdc, std::wstring name)
 	FontFamily fontFamily(L"Times New Roman");
 	Font font(&fontFamily, 24, FontStyleRegular, UnitPixel);
 	PointF pointF(10.0f, 20.0f);
-	graphics.DrawString(L"woosocklee", -1, &font, pointF, &brush);
+	graphics.DrawString(&name[0], -1, &font, pointF, &brush);
 }
 
 void Game_manager::Gdi_Draw_score(HDC hdc, int score)

@@ -1,6 +1,7 @@
 ﻿// Win_api_defense_game.cpp : 애플리케이션에 대한 진입점을 정의합니다.
 //
 
+
 #include "pch.h"
 #include "framework.h"
 #include "Gamemanager.h"
@@ -27,7 +28,9 @@ ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
-
+BOOL    CALLBACK    DlgStartProc(HWND hDlg, UINT iMsg, WPARAM wParam, LPARAM lParam);
+BOOL    CALLBACK    DlgRankingProc(HWND hDlg, UINT iMsg, WPARAM wParam, LPARAM lParam);
+void                rankingreader(HWND hDlg);
 
 //내가 만든 전역변수들
 
@@ -71,11 +74,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     UNREFERENCED_PARAMETER(lpCmdLine);
 
     // TODO: 여기에 코드를 입력합니다.
-
+    GM.setCurStage(Game_manager::Stage::Beginning);
     Gdi_Init(g_GdiToken);
 
     CreateBitmap(tempBImage, tempbitback);
-
+    
     // 전역 문자열을 초기화합니다.
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
     LoadStringW(hInstance, IDC_WINAPIDEFENSEGAME, szWindowClass, MAX_LOADSTRING);
@@ -118,11 +121,15 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         }
         else
         {
-            GM.Update();
-            if (GM.getCurStage() == Game_manager::Stage::Ranking)
+            switch (GM.getCurStage())
             {
+            case Game_manager::Stage::Gameplay:
+                GM.Update();
+                break;
+            default:
                 break;
             }
+            
             //update here
 
         }
@@ -202,15 +209,23 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-
-    
-
+    static bool isStart = true;
     switch (message)
     {
     case WM_CREATE:
+        if (GM.getCurStage() == Game_manager::Stage::Beginning && isStart)
+        {
+            DialogBox(hInst, MAKEINTRESOURCE(IDD_START), hWnd, DlgStartProc);
+            isStart = false;
+        }
+
         GetClientRect(hWnd, &windowsize);
         GM.setwindowSize(windowsize);
-        SetTimer(hWnd, 0, 0, NULL);
+        
+        if (isStart == false)
+        {
+            SetTimer(hWnd, 0, 0, NULL);
+        }
         break;
     case WM_SIZE:
         GetClientRect(hWnd, &windowsize);
@@ -219,6 +234,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         GM.Pturret.setTCurPos({ double((GM.windowSize.left + GM.windowSize.right) / 2), double(GM.windowSize.bottom - 50) });
         break;
     case WM_TIMER:
+        if (GM.getCurStage() == Game_manager::Stage::Ranking)
+        {
+            KillTimer(hWnd, 0);
+            DialogBox(hInst, MAKEINTRESOURCE(IDD_RANKING), hWnd, DlgRankingProc);
+            DestroyWindow(hWnd);
+        }
         InvalidateRgn(hWnd, NULL, FALSE);
         break;
     case WM_COMMAND:
@@ -268,6 +289,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);
     }
+
     return 0;
 }
 
@@ -289,4 +311,97 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
         break;
     }
     return (INT_PTR)FALSE;
+}
+
+BOOL CALLBACK DlgStartProc(HWND hDlg, UINT iMsg, WPARAM wParam, LPARAM lParam)
+{
+    TCHAR wordbuff[100];
+    std::wstring word;
+
+    switch (iMsg)
+    {
+    case WM_COMMAND:
+        switch (LOWORD(wParam))
+        {
+        case IDOK:
+            EndDialog(hDlg, LOWORD(wParam));
+            GetDlgItemText(hDlg, IDC_EDIT1, wordbuff, 100);
+            word = wordbuff;
+            GM.Pturret.setname(word);
+            GM.setCurStage(Game_manager::Stage::Gameplay);
+            return TRUE;
+        }
+        break;
+    }
+    return FALSE;
+}
+
+void rankingreader(HWND hDlg)
+{
+    SetDlgItemText(hDlg, ID_NOWNAME, (wchar_t*)GM.Pturret.getname().c_str());
+    SetDlgItemInt(hDlg, IDC_NOWSCORE, GM.Pturret.getscore(), true);
+    std::wfstream savefile;
+    savefile.open("ranking.txt", std::wios::out | std::wios::in);
+    std::vector<std::pair<int, std::wstring>> ranking;
+    std::wstring namebuff;
+    int scorebuff;
+
+    for (int i = 0; i < 3; i++)
+    {
+        savefile >> scorebuff;
+        std::getline(savefile, namebuff);
+        for (int i = 1; i < namebuff.size(); i++)
+        {
+            namebuff[i - 1] = namebuff[i];
+        }
+        ranking.push_back({ scorebuff,namebuff });
+    }
+
+    SetDlgItemText(hDlg, IDC_FIRSTNAME, (wchar_t*)ranking[0].second.c_str());
+    SetDlgItemText(hDlg, IDC_SECONDNAME, (wchar_t*)ranking[1].second.c_str());
+    SetDlgItemText(hDlg, IDC_THIRDNAME, (wchar_t*)ranking[2].second.c_str());
+    SetDlgItemInt(hDlg, IDC_FIRSTSCORE, ranking[0].first, true);
+    SetDlgItemInt(hDlg, IDC_SECONDSCORE, ranking[1].first, true);
+    SetDlgItemInt(hDlg, IDC_THIRDSCORE, ranking[2].first, true);
+
+    ranking.push_back({ GM.Pturret.getscore(), GM.Pturret.getname() });
+    std::sort(ranking.begin(), ranking.end(), [](std::pair<int, std::wstring> a, std::pair<int, std::wstring> b)
+        {
+            return a.first > b.first;
+        }
+    );
+    ranking.pop_back();
+    savefile.close();
+    savefile.open("ranking.txt", std::wios::out | std::wios::trunc);
+    
+    for (auto i : ranking)
+    {
+        savefile << i.first << " " << i.second << '\n';
+    }
+    savefile.close();
+}
+
+
+
+BOOL CALLBACK DlgRankingProc(HWND hDlg, UINT iMsg, WPARAM wParam, LPARAM lParam)
+{
+
+    switch (iMsg)
+    {
+    case WM_INITDIALOG:
+        rankingreader(hDlg);
+        break;
+    case WM_COMMAND:
+        switch (LOWORD(wParam))
+        {
+        case IDOK:
+            EndDialog(hDlg, LOWORD(wParam));
+            return TRUE;
+        }
+        break;
+    }
+    return FALSE;
+
+    
+
 }

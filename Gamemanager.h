@@ -50,6 +50,7 @@ public:
 	HBITMAP hBackImage;
 
 	Stage getCurStage() const;
+	void setCurStage(Stage s);
 
 
 public:

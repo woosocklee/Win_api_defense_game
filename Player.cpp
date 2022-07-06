@@ -16,6 +16,7 @@ Player::Player(const RECT R)
 
     this->score = 0;
     this->TurretCurpos = {double((R.left + R.right)/2) , double(R.top + 50) };
+    this->dead = false;
 }
 
 Player::~Player()
@@ -86,8 +87,18 @@ void Player::setTCurPos(Vector2D pos)
     this->TurretCurpos = pos;
 }
 
+bool Player::getdead()
+{
+    return this->dead;
+}
 
-void Gdi_DrawPlayer(HDC hdc, int x, int y)
+void Player::setdead(bool newdead)
+{
+    this->dead = newdead;
+}
+
+
+void Player::Gdi_DrawPlayer(HDC hdc, int x, int y)
 {
     Graphics graphics(hdc);
     Image img((WCHAR*)L"Image/halfarc.png");
@@ -97,7 +108,7 @@ void Gdi_DrawPlayer(HDC hdc, int x, int y)
     graphics.DrawImage(&img, x - (w / 20), y - h / 10, w / 10, h / 10);
 }
 
-void Gdi_barrel(HDC hdc, int x, int y, int rot)
+void Player::Gdi_barrel(HDC hdc, int x, int y, int rot)
 {
     Graphics graphics(hdc);
     Image* pImg = nullptr;
