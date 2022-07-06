@@ -216,9 +216,6 @@ void Game_manager::Draw(HDC hdc)
 	BitBlt(hdc, 0, 0, this->windowSize.right, this->windowSize.bottom, outerhdc, 0, 0, SRCCOPY);
 	SelectObject(outerhdc, hOldBitmap);
 	DeleteObject(outerhdc);
-
-	
-
 }
 
 void Game_manager::Gdi_Draw_name(HDC hdc, std::wstring name)
