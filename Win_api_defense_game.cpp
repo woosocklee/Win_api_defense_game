@@ -215,7 +215,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_CREATE:
         if (GM.getCurStage() == Game_manager::Stage::Beginning && isStart)
         {
-            DialogBox(hInst, MAKEINTRESOURCE(IDD_START), hWnd, DlgStartProc);
+            DialogBox(hInst, MAKEINTRESOURCE(IDD_START), hWnd, (DLGPROC)DlgStartProc);
             isStart = false;
         }
 
@@ -237,7 +237,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         if (GM.getCurStage() == Game_manager::Stage::Ranking)
         {
             KillTimer(hWnd, 0);
-            DialogBox(hInst, MAKEINTRESOURCE(IDD_RANKING), hWnd, DlgRankingProc);
+            DialogBox(hInst, MAKEINTRESOURCE(IDD_RANKING), hWnd, (DLGPROC)DlgRankingProc);
             DestroyWindow(hWnd);
         }
         InvalidateRgn(hWnd, NULL, FALSE);
